@@ -1,0 +1,70 @@
+============================================================
+NOVASTOCK – DESCRIPCIÓN DE ARQUITECTURA
+============================================================
+
+TIPO DE ARQUITECTURA
+  Aplicación web monolítica de una sola capa de servidor,
+  con separación lógica entre backend (Flask) y frontend
+  (HTML/CSS/JS estático servido por Flask).
+
+------------------------------------------------------------
+CAPAS DEL SISTEMA
+------------------------------------------------------------
+
+1. CAPA DE PRESENTACIÓN (Frontend)
+   - Archivos : templates/index.html, static/css/, static/js/
+   - Rol      : Interfaz de usuario en el navegador.
+   - Comunicación: Fetch API → JSON → API REST Flask.
+
+2. CAPA DE LÓGICA DE NEGOCIO (Backend)
+   - Archivo  : app.py
+   - Framework: Flask 3
+   - Rol      : Expone API REST, valida datos, orquesta
+                operaciones CRUD con DynamoDB.
+
+3. CAPA DE DATOS (Base de datos)
+   - Servicio : Amazon DynamoDB
+   - Librería : Boto3
+   - Tabla    : Products
+   - Clave PK : productId (UUID)
+
+------------------------------------------------------------
+FLUJO DE UNA OPERACIÓN CRUD
+------------------------------------------------------------
+
+  [Usuario]
+      │  Interactúa con formulario/tabla
+      ▼
+  [Frontend – main.js]
+      │  fetch() → JSON
+      ▼
+  [Backend – app.py (Flask)]
+      │  Valida datos y construye operación DynamoDB
+      ▼
+  [Amazon DynamoDB]
+      │  Retorna resultado
+      ▼
+  [Backend]
+      │  Serializa respuesta JSON
+      ▼
+  [Frontend]
+      │  Actualiza tabla / muestra alerta
+      ▼
+  [Usuario]
+
+------------------------------------------------------------
+SEGURIDAD
+------------------------------------------------------------
+  - Credenciales AWS gestionadas con variables de entorno.
+  - Archivo .env excluido del control de versiones.
+  - Sin secretos hardcodeados en el código fuente.
+
+------------------------------------------------------------
+ENTORNO DE EJECUCIÓN
+------------------------------------------------------------
+  - Python 3.10+
+  - Sistema operativo: Windows 10/11 (desarrollo local)
+  - Puerto: 5000 (Flask dev server)
+  - AWS CLI configurado o variables en .env
+
+============================================================

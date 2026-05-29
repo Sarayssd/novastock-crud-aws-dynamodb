@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NovaStock – Gestión de Inventario</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+</head>
+<body>
+ 
+  <!-- ══════════════════════════════════════════
+       SIDEBAR
+  ══════════════════════════════════════════ -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-name">
+        <i class="ti ti-package" aria-hidden="true"></i>
+        Nova<span>Stock</span>
+      </div>
+      <div class="logo-sub">Gestión de Inventario</div>
+    </div>
+ 
+    <nav class="nav">
+      <div class="nav-item active">
+        <i class="ti ti-layout-dashboard" aria-hidden="true"></i>
+        Dashboard
+      </div>
+    </nav>
+ 
+    <div class="sidebar-footer">
+      <div class="avatar">AD</div>
+      <div class="sidebar-user">
+        <p>Administrador</p>
+        <span>admin@novastock.com</span>
+      </div>
+    </div>
+  </aside>
+ 
+
+  <div class="main">
+ 
+    <!-- Topbar -->
+    <header class="topbar">
+      <h1>Dashboard</h1>
+      <div class="topbar-actions">
+        <div class="icon-btn" title="Notificaciones">
+          <i class="ti ti-bell" aria-hidden="true"></i>
+          <span class="notif-dot"></span>
+        </div>
+        <div class="icon-btn" title="Configuración">
+          <i class="ti ti-settings" aria-hidden="true"></i>
+        </div>
+      </div>
+    </header>
+ 
+    <main class="content">
+ 
+      <!-- Alerta global -->
+      <div id="alerta" class="alerta oculto" role="alert"></div>
+ 
+      <!-- ── Tarjetas de estadísticas ── -->
+      <section class="stats-grid" aria-label="Resumen de inventario">
+        <div class="stat-card">
+          <div class="stat-top">
+            <span class="stat-label">Productos Totales</span>
+            <div class="stat-icon si-purple"><i class="ti ti-box" aria-hidden="true"></i></div>
+          </div>
+          <div class="stat-num" id="stat-total">0</div>
+          <div class="stat-change up">
+            <i class="ti ti-trending-up" aria-hidden="true"></i>
+            <span id="stat-total-txt">Cargando...</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top">
+            <span class="stat-label">En Stock</span>
+            <div class="stat-icon si-green"><i class="ti ti-check" aria-hidden="true"></i></div>
+          </div>
+          <div class="stat-num" id="stat-activos">0</div>
+          <div class="stat-change up">
+            <i class="ti ti-trending-up" aria-hidden="true"></i>
+            <span>Productos activos</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top">
+            <span class="stat-label">Stock Bajo</span>
+            <div class="stat-icon si-amber"><i class="ti ti-alert-triangle" aria-hidden="true"></i></div>
+          </div>
+          <div class="stat-num" id="stat-bajo">0</div>
+          <div class="stat-change down">
+            <i class="ti ti-trending-down" aria-hidden="true"></i>
+            <span>Requieren reposición</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top">
+            <span class="stat-label">Valor Inventario</span>
+            <div class="stat-icon si-blue"><i class="ti ti-currency-dollar" aria-hidden="true"></i></div>
+          </div>
+          <div class="stat-num" id="stat-valor">$0</div>
+          <div class="stat-change up">
+            <i class="ti ti-trending-up" aria-hidden="true"></i>
+            <span>Valor total en USD</span>
+          </div>
+        </div>
+      </section>
+ 
+      <!-- ── Formulario agregar / editar ── -->
+      <section class="panel" id="panel-form">
+        <div class="panel-layout">
+          <div class="panel-left">
+            <div class="panel-header">
+              <div class="panel-icon"><i class="ti ti-file-plus" aria-hidden="true"></i></div>
+              <h2 id="titulo-form">Agregar Nuevo Producto</h2>
+            </div>
+ 
+            <form id="formulario" novalidate>
+              <input type="hidden" id="productId"/>
+ 
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="nombre">Nombre del Producto</label>
+                  <input type="text" id="nombre" placeholder="Ej: Laptop Dell Inspiron 15" required/>
+                </div>
+                <div class="form-group">
+                  <label for="categoria">Categoría</label>
+                  <select id="categoria" required>
+                    <option value="">Selecciona una categoría</option>
+                    <option>Electrónica</option>
+                    <option>Accesorios</option>
+                    <option>Periféricos</option>
+                    <option>Monitores</option>
+                    <option>Componentes</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="estado">Estado</label>
+                  <select id="estado" required>
+                    <option value="activo">Activo</option>
+                    <option value="inactivo">Inactivo</option>
+                    <option value="agotado">Agotado</option>
+                  </select>
+                </div>
+              </div>
+ 
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="precio">Precio (USD)</label>
+                  <input type="number" id="precio" placeholder="Ej: 599.99" step="0.01" min="0" required/>
+                </div>
+                <div class="form-group">
+                  <label for="stock">Stock</label>
+                  <input type="number" id="stock" placeholder="Ej: 10" min="0" required/>
+                </div>
+                <div class="form-group">
+                  <label for="descripcion">Descripción (opcional)</label>
+                  <input type="text" id="descripcion" placeholder="Descripción del producto"/>
+                </div>
+              </div>
+ 
+              <div class="btn-row">
+                <button type="submit" class="btn btn-primary">
+                  <i class="ti ti-device-floppy" aria-hidden="true"></i>Guardar Producto
+                </button>
+                <button type="button" class="btn btn-ghost" onclick="cancelarEdicion()">
+                  <i class="ti ti-x" aria-hidden="true"></i>Cancelar
+                </button>
+              </div>
+            </form>
+          </div>
+ 
+          <div class="panel-right">
+            <div class="box-decorativo">
+              <svg width="130" height="110" viewBox="0 0 130 110" fill="none" aria-hidden="true">
+                <rect x="25" y="50" width="80" height="50" rx="5" fill="#4f46e5" opacity=".25" stroke="#7c6ef5" stroke-width="1.5"/>
+                <path d="M25 50 L65 28 L105 50" fill="#3d3a7a" opacity=".5" stroke="#7c6ef5" stroke-width="1.5"/>
+                <path d="M65 28 L65 50" stroke="#a5b4fc" stroke-width="1" stroke-dasharray="3,2"/>
+                <path d="M44 50 L44 68" stroke="#7c6ef5" stroke-width="1" opacity=".5"/>
+                <path d="M86 50 L86 68" stroke="#7c6ef5" stroke-width="1" opacity=".5"/>
+                <circle cx="95" cy="22" r="10" fill="#4f46e5" opacity=".35" stroke="#7c6ef5" stroke-width="1"/>
+                <circle cx="106" cy="12" r="6" fill="#7c6ef5" opacity=".3" stroke="#a5b4fc" stroke-width="1"/>
+                <circle cx="84" cy="14" r="5" fill="#6366f1" opacity=".3" stroke="#a5b4fc" stroke-width="1"/>
+                <path d="M95 17 L95 11 M92 14 L98 14" stroke="#a5b4fc" stroke-width="1.5"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+ 
+      <!-- ── Tabla de inventario ── -->
+      <section class="panel">
+        <div class="table-header">
+          <h2><i class="ti ti-package" aria-hidden="true"></i>Inventario de Productos</h2>
+          <div class="table-actions">
+            <div class="search-box">
+              <i class="ti ti-search" aria-hidden="true"></i>
+              <input type="text" id="buscador" placeholder="Buscar producto..." oninput="filtrarProductos()"/>
+            </div>
+            <button class="btn-sm" onclick="filtrarProductos()">
+              <i class="ti ti-filter" aria-hidden="true"></i>Filtros
+            </button>
+            <button class="btn-sm btn-update" onclick="cargarProductos()">
+              <i class="ti ti-refresh" aria-hidden="true"></i>Actualizar
+            </button>
+          </div>
+        </div>
+ 
+        <div class="tabla-wrapper">
+          <table id="tabla-productos" aria-label="Lista de productos">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Producto</th>
+                <th>Categoría</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-productos">
+              <tr>
+                <td colspan="7" class="sin-datos">
+                  <i class="ti ti-loader" aria-hidden="true"></i> Cargando productos...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+ 
+    </main>
+  </div>
+ 
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
