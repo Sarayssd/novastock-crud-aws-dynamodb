@@ -12,7 +12,7 @@ Permite crear, listar, editar y eliminar productos desde una interfaz web desple
 | Backend | Python, Flask |
 | Base de datos | Amazon DynamoDB, Boto3 |
 | Frontend | HTML, CSS, JavaScript |
-| Servidor | Amazon EC2, Nginx |
+| Servidor | Amazon EC2, Nginx, Gunicorn, systemd  |
 | Seguridad | HTTPS, IAM Role |
 
 ---
@@ -144,6 +144,7 @@ http://127.0.0.1:5000
 
 El proyecto fue desplegado en una instancia **Amazon EC2** con Ubuntu.  
 Se utilizó **Amazon DynamoDB** como base de datos, **Nginx** como servidor intermedio y **Certbot** para habilitar HTTPS.
+Además, el backend quedó configurado como un servicio del sistema utilizando **Gunicorn** y **systemd**. Esto permite que la aplicación Flask se ejecute de forma estable en la instancia EC2, sin depender de una terminal SSH abierta. De esta manera, el servicio puede mantenerse activo en segundo plano y reiniciarse automáticamente si ocurre algún fallo.
 
 Servicios usados:
 
@@ -154,6 +155,8 @@ Servicios usados:
 - Elastic IP
 - Nginx
 - Certbot
+- Gunicorn 
+- systemd
 
 ---
 
